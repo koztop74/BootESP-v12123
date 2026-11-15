@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0e1019">
+  <meta name="description" content="BootESP: электронная шпаргалка на ESP32-C3 SuperMini с OLED за 1 200 ₽. Фотографии показывают примерный внешний вид устройства. Подробности и оформление заявки.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="BootESP — электронная шпаргалка ESP32-C3 за 1 200 ₽">
+  <meta property="og:description" content="Компактное электронное устройство на заказ. Фото — примерный внешний вид.">
+  <meta property="og:image" content="assets/device-front.webp">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <title>BootESP — ESP32-C3 OLED шпаргалка и электронные устройства</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0d0f17;--surface:#151824;--surface-2:#1b1e2c;--surface-3:#222539;--line:#2a2e41;--text:#f4f3fb;--muted:#989cb3;--accent:#a16bff;--accent-2:#7547ec;--green:#63d7ae;--glow:rgba(151,92,255,.28);--radius:22px;--shadow:0 28px 85px rgba(0,0,0,.26)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:105px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.55;min-width:320px;overflow-x:hidden}
+    body::before{content:"";position:absolute;z-index:-1;pointer-events:none;top:50px;left:0;right:0;height:740px;background:radial-gradient(ellipse 48% 55% at 78% 24%,rgba(108,59,218,.12),transparent 75%),radial-gradient(ellipse 60% 55% at 15% 75%,rgba(44,83,162,.07),transparent 70%)}
+    a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}button{cursor:pointer}img{display:block;max-width:100%}::selection{background:#8850e9;color:white}
+    .container{max-width:1216px;margin:auto;padding:0 28px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .announcement{height:35px;display:flex;align-items:center;justify-content:center;background:#201835;border-bottom:1px solid rgba(165,120,248,.11);font-size:12px;color:#cebaf8;letter-spacing:.02em;text-align:center;padding:0 12px}
+    .announcement span{display:inline-block;margin-right:8px;color:#a77bfa}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(13,15,23,.91);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .head{height:78px;display:flex;align-items:center;gap:30px}
+    .logo{display:inline-flex;align-items:center;gap:11px;flex-shrink:0;font-size:23px;font-weight:850;letter-spacing:-.065em}
+    .logo-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(145deg,#bd83ff,#7748f0);box-shadow:0 4px 22px rgba(136,75,248,.22)}
+    .logo strong{color:#ba91ff}.logo small{font-size:11px;display:block;letter-spacing:.09em;font-weight:600;color:#9695ab;line-height:1;margin-top:-3px}
+    .nav{display:flex;gap:24px;margin-left:26px;align-items:center}.nav a{font-weight:550;color:#adb0c3;font-size:14px;transition:color .2s}.nav a:hover,.nav a:focus-visible{color:#fff}
+    .head-actions{display:flex;align-items:center;gap:10px;margin-left:auto}.head-note{font-size:12px;color:#878ba1;display:flex;align-items:center;gap:7px;white-space:nowrap}.live{height:7px;width:7px;border-radius:100%;background:#77dbb2;box-shadow:0 0 12px #77dbb29e}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 20px;min-height:48px;background:linear-gradient(135deg,#b078ff,#8151ee);border:1px solid rgba(255,255,255,.08);border-radius:13px;color:white;font-weight:750;font-size:14px;letter-spacing:-.005em;box-shadow:0 8px 26px rgba(127,75,238,.2);transition:transform .18s,filter .18s,box-shadow .18s}
+    .btn:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 12px 33px rgba(127,75,238,.33)}.btn:active{transform:translateY(0)}.btn:focus-visible,.thumb:focus-visible,.gallery-arrow:focus-visible,.zoom:focus-visible,.icon-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+    .btn-sm{min-height:42px;padding:11px 17px}.btn-outline{background:#202235;color:#ece7ff;border:1px solid #34354b;box-shadow:none}.btn-outline:hover{background:#2b2c45;box-shadow:none}
+    .crumbs{display:flex;gap:11px;align-items:center;flex-wrap:wrap;padding:28px 0 23px;font-size:12px;color:#888da4}.crumbs a:hover{color:#ddd}.crumbs .sep{color:#51556b}.crumbs strong{color:#c7c5d8;font-weight:550}
+    .product{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);gap:42px;align-items:start;padding-bottom:44px}
+    .gallery{min-width:0}.gallery-main{border:1px solid #2a2d3d;border-radius:24px;position:relative;overflow:hidden;background:#e9edf3;box-shadow:var(--shadow);isolation:isolate;aspect-ratio:1.11;display:flex;align-items:center;justify-content:center}
+    .gallery-main:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,15,23,.18),transparent 24%,transparent 75%,rgba(13,15,23,.32));pointer-events:none;z-index:1}
+    .gallery-main img{width:100%;height:100%;object-fit:cover;transition:opacity .2s,transform .45s}.gallery-main:hover img{transform:scale(1.025)}
+    .photo-label{position:absolute;z-index:3;top:18px;left:18px;background:rgba(18,20,31,.84);border:1px solid rgba(255,255,255,.13);color:#fff;padding:8px 11px;border-radius:10px;font-size:11px;font-weight:650;backdrop-filter:blur(8px)}
+    .photo-count{position:absolute;z-index:3;bottom:18px;left:18px;border-radius:10px;padding:7px 11px;background:rgba(19,19,32,.75);color:#f9f9ff;font-size:12px;font-weight:700;backdrop-filter:blur(8px)}
+    .gallery-arrow{position:absolute;z-index:3;top:50%;transform:translateY(-50%);width:38px;height:38px;background:rgba(20,20,34,.7);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:50%;display:grid;place-items:center;backdrop-filter:blur(8px);transition:background .15s}.gallery-arrow:hover{background:#5b3ca3}.gallery-arrow.prev{left:14px}.gallery-arrow.next{right:14px}
+    .zoom{position:absolute;z-index:3;right:18px;bottom:18px;background:rgba(19,19,32,.8);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:white;width:34px;height:34px;display:grid;place-items:center}.zoom:hover{background:#65469a}
+    .thumbnails{display:flex;gap:12px;margin-top:14px;align-items:stretch}.thumb{position:relative;overflow:hidden;width:96px;height:83px;border:2px solid transparent;border-radius:13px;background:#252839;padding:0;transition:border .2s,opacity .2s;flex-shrink:0}.thumb img{width:100%;height:100%;object-fit:cover}.thumb[aria-pressed="true"]{border-color:#af85ff}.thumb:hover{border-color:#8c65e4}.thumb-label{padding:18px 20px;border:1px dashed #3e4055;color:#8b8fa5;background:#151723;border-radius:13px;font-size:12px;display:flex;align-items:center;gap:9px;flex:1}
+    .product-content{padding-top:2px}.eyebrow{display:flex;align-items:center;gap:8px;color:#aa8ae9;letter-spacing:.13em;text-transform:uppercase;font-size:11px;font-weight:800}.eyebrow i{width:7px;height:7px;background:#aa7bff;border-radius:50%;display:block}
+    .product-content h1{font-size:clamp(32px,3.25vw,47px);line-height:1.105;letter-spacing:-.048em;margin:15px 0 16px;font-weight:840}.product-content h1 span{color:#ba96ff}
+    .intro{color:#a7abc0;font-size:15px;line-height:1.8;max-width:510px;margin:0 0 23px}
+    .chips{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:23px}.chip{font-size:12px;font-weight:600;color:#c1c1d3;background:#222437;border:1px solid #32344b;padding:7px 11px;border-radius:8px;display:inline-flex;align-items:center;gap:7px}.chip svg{color:#aa80f4}.chip.is-green{color:#8de8c9;border-color:#2c594f;background:#132a28}
+    .price-card{border:1px solid #39314d;background:linear-gradient(148deg,#242037 0%,#191926 58%,#171824 100%);border-radius:22px;padding:25px;position:relative;overflow:hidden;box-shadow:0 14px 55px rgba(12,6,32,.28)}.price-card:before{position:absolute;content:"";right:-40px;top:-100px;width:220px;height:220px;border-radius:50%;background:rgba(142,87,248,.13);filter:blur(30px);pointer-events:none}
+    .price-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;position:relative}.price-label{color:#aaa7bd;font-size:13px;margin-bottom:5px}.price{font-size:43px;line-height:1.1;font-weight:850;letter-spacing:-.045em;font-variant-numeric:tabular-nums}.price small{font-size:26px;font-weight:750}.order-badge{background:#263d35;color:#9ce3bb;font-size:11px;font-weight:750;padding:8px 10px;border:1px solid #3d705a;border-radius:9px;white-space:nowrap;align-self:center}
+    .price-card .main-buy{display:flex;width:100%;margin-top:22px;font-size:15px;min-height:54px}.price-card .secondary-buy{display:flex;width:100%;margin-top:9px;min-height:48px}.payment-caption{display:flex;align-items:flex-start;gap:8px;margin:15px 0 0;color:#a8a1be;font-size:12px;line-height:1.5}.payment-caption svg{flex-shrink:0;margin-top:2px;color:#ba90ff}
+    .notice{margin-top:17px;display:flex;gap:13px;border-radius:15px;padding:15px;background:#1a1a28;border:1px solid #323247;color:#aeb1c3;font-size:13px;line-height:1.6}.notice svg{flex-shrink:0;margin-top:2px;color:#e7c085}.notice b{color:#e5dfef}
+    .section{padding:36px 0}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}.section-head h2{font-size:28px;letter-spacing:-.036em;line-height:1.2;margin:5px 0 0}.section-head p{margin:0;color:#9b9eb3;font-size:14px}.tagline{font-size:11px;font-weight:800;letter-spacing:.13em;color:#a985f8;text-transform:uppercase}
+    .about-grid{display:grid;grid-template-columns:minmax(0,1.37fr) minmax(300px,.63fr);gap:18px}.panel{background:linear-gradient(135deg,#191b28,#151723);border:1px solid #292c3e;border-radius:21px;padding:27px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:-4px 0 22px;border-bottom:1px solid #333647;padding-bottom:16px}.tab{color:#9ca0b7;background:transparent;border:1px solid transparent;border-radius:10px;font-size:13px;font-weight:650;padding:9px 14px;transition:.2s}.tab:hover{color:white}.tab[aria-selected="true"]{color:#f1eaff;background:#343050;border-color:#54436d}
+    .tab-panel{display:none;color:#afb2c6;font-size:14px;line-height:1.85;min-height:137px}.tab-panel.active{display:block}.tab-panel p{margin:0 0 12px}.tab-panel b{color:#eeedf6}.tab-panel ul{padding-left:20px;margin:0}.tab-panel li{margin:5px 0}
+    .specs{display:grid;grid-template-columns:1fr 1fr;gap:11px}.spec{border:1px solid #323449;background:#202232;border-radius:14px;padding:16px}.spec svg{color:#b18af9;margin-bottom:11px}.spec b{display:block;font-size:13px}.spec span{display:block;font-size:12px;color:#8f93aa;margin-top:3px;line-height:1.5}
+    .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.step{padding:26px 24px;border-radius:19px;border:1px solid #2c2d41;background:#181a27;position:relative;min-height:202px}.step .num{font-size:12px;color:#aa81fb;font-weight:800;letter-spacing:.12em}.step .step-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:#322744;color:#c59cff;margin:16px 0 12px}.step h3{margin:0 0 7px;font-size:16px}.step p{font-size:13px;color:#9ea1b5;line-height:1.7;margin:0}
+    .faq{display:grid;grid-template-columns:1fr 1fr;gap:13px}.faq details{background:#181b28;border:1px solid #2b2e3f;border-radius:15px;padding:0 18px}.faq summary{padding:19px 24px 19px 0;position:relative;cursor:pointer;font-size:14px;font-weight:650;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";position:absolute;right:1px;top:15px;color:#c5a1ff;font-size:22px;font-weight:400}.faq details[open] summary:after{content:"−"}.faq details p{margin:0 0 20px;color:#a6a9c0;font-size:13px;line-height:1.75}
+    .cta-banner{margin:22px 0 65px;padding:30px 34px;border:1px solid #514276;border-radius:22px;background:radial-gradient(ellipse at 92% 40%,rgba(121,68,243,.2),transparent 45%),linear-gradient(110deg,#29223c,#1a1a29);display:flex;align-items:center;justify-content:space-between;gap:20px}.cta-banner h2{margin:0 0 7px;font-size:23px;letter-spacing:-.035em}.cta-banner p{margin:0;color:#b7accb;font-size:13px}.cta-banner .btn{flex-shrink:0}
+    footer{border-top:1px solid #242638;background:#0a0c13;padding:25px 0 30px}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot-logo{font-size:17px;font-weight:850;letter-spacing:-.04em}.foot-logo span{color:#ae83ff}.foot-copy{font-size:12px;color:#85899e;max-width:620px}.footer-links{display:flex;gap:18px;color:#a9aab9;font-size:12px}.footer-links a:hover{color:#fff}
+    .mobile-bar{display:none}
+    dialog{padding:0;border:1px solid #51426f;border-radius:21px;background:#181a28;color:white;width:min(495px,calc(100vw - 32px));box-shadow:0 28px 120px #000a;max-height:min(90vh,850px);overflow:auto}dialog::backdrop{background:rgba(4,5,11,.8);backdrop-filter:blur(7px)}.modal-inner{padding:27px}.modal-head{display:flex;align-items:start;justify-content:space-between;gap:18px}.modal-head h2{font-size:24px;letter-spacing:-.034em;margin:5px 0}.modal-head p{color:#9fa2b7;font-size:13px;margin:0 0 21px}.icon-btn{background:#292a3d;border:1px solid #414158;border-radius:10px;color:#ddd;width:34px;height:34px;display:grid;place-items:center;flex-shrink:0}.icon-btn:hover{color:white;background:#39314f}.modal-inner label{display:block;margin:15px 0 7px;color:#c6c5d6;font-size:13px;font-weight:700}.field{width:100%;background:#11131e;border:1px solid #3b3d51;border-radius:11px;min-height:44px;padding:11px 13px;color:#fff;outline:none;transition:border .2s}.field:focus{border-color:#a982ff}.field::placeholder{color:#696d83}textarea.field{height:92px;min-height:92px;resize:vertical}.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.modal-product{display:flex;gap:13px;align-items:center;border:1px solid #33364a;border-radius:13px;padding:11px;background:#222438}.modal-product img{width:67px;height:67px;object-fit:cover;border-radius:10px}.modal-product b{display:block;font-size:13px}.modal-product span{color:#cdaaff;font-size:14px;font-weight:800}.modal-buttons{display:grid;gap:9px;margin-top:21px}.modal-buttons .btn{width:100%}.help{font-size:12px;color:#989db4;margin-top:10px;line-height:1.6}.contact-notice{margin-top:12px;font-size:12px;color:#cebfa3;background:#282418;border:1px solid #514532;border-radius:11px;padding:10px 12px}.contact-notice a{color:#eccf89;text-decoration:underline}.zoom-dialog{width:min(950px,calc(100vw - 30px));background:#141621}.zoom-dialog img{max-height:75vh;object-fit:contain;width:100%;height:auto}.zoom-dialog-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;color:#c8c9d6;font-size:13px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,15px);background:#302443;border:1px solid #7860b0;color:white;border-radius:12px;padding:13px 18px;box-shadow:0 8px 35px #0007;opacity:0;pointer-events:none;transition:.2s;z-index:100;font-size:13px}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:1040px){.nav{margin-left:0;gap:16px}.head-note{display:none}.product{gap:25px}.price{font-size:37px}.product-content h1{font-size:38px}.about-grid{grid-template-columns:1.2fr .8fr}}
+    @media(max-width:760px){.container{padding:0 17px}.announcement{font-size:11px}.head{height:65px;gap:10px}.logo{font-size:21px}.nav{display:none}.head-actions{margin-left:auto}.head-actions .btn{min-height:37px;padding:9px 13px;font-size:12px}.crumbs{padding:18px 0 18px;font-size:11px}.product{display:flex;flex-direction:column;gap:22px;padding-bottom:15px}.gallery,.product-content{width:100%}.gallery-main{aspect-ratio:1.12;border-radius:17px}.photo-label{font-size:10px;top:12px;left:12px}.thumbnails{margin-top:11px;gap:9px}.thumb{width:75px;height:66px}.thumb-label{padding:12px;font-size:11px}.product-content h1{font-size:36px;max-width:550px}.intro{font-size:14px;margin-bottom:18px}.price-card{padding:20px}.section{padding:30px 0}.section-head h2{font-size:25px}.about-grid{grid-template-columns:1fr}.specs{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:1fr;gap:11px}.step{min-height:0;display:grid;grid-template-columns:60px 1fr;column-gap:0;padding:16px 19px}.step .num{grid-column:1;grid-row:1;margin-top:4px}.step .step-icon{grid-column:1;grid-row:2 / span 2;margin:4px 0}.step h3{grid-column:2;grid-row:1 / span 2;margin:0}.step p{grid-column:2;grid-row:3}.faq{grid-template-columns:1fr}.cta-banner{padding:24px;flex-direction:column;align-items:stretch;margin-bottom:75px}.cta-banner .btn{width:100%}.footer-inner{display:block}.foot-copy{margin:8px 0 15px}.mobile-bar{position:fixed;display:flex;align-items:center;justify-content:space-between;gap:14px;bottom:0;left:0;right:0;z-index:15;padding:10px 17px calc(10px + env(safe-area-inset-bottom));background:rgba(17,18,29,.95);border-top:1px solid #3b3152;backdrop-filter:blur(15px)}.mobile-bar b{font-size:22px;letter-spacing:-.03em}.mobile-bar small{display:block;font-size:10px;color:#9e9bab}.mobile-bar .btn{padding:11px 16px;min-height:43px;font-size:13px}.toast{bottom:90px;width:max-content;max-width:calc(100vw - 25px);text-align:center}}
+    @media(max-width:410px){.head-actions .btn{padding:8px 10px}.product-content h1{font-size:31px}.price{font-size:34px}.order-badge{font-size:10px}.panel{padding:18px}.tabs{gap:3px}.tab{padding:8px 10px;font-size:11px}.spec{padding:12px}.spec span{font-size:11px}.thumb-label{font-size:10px;padding:10px}.modal-row{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+    .device-subtitle{font-weight:750;color:#d2b7ff;font-size:15px;margin:-5px 0 18px;letter-spacing:.02em}
+    .benefits-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.benefit{background:linear-gradient(145deg,#202035,#161924);border:1px solid #34314b;border-radius:19px;padding:24px;transition:transform .35s,border-color .35s,box-shadow .35s}.benefit:hover{transform:translateY(-6px);border-color:#8563ce;box-shadow:0 20px 40px #0003}.benefit>span{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#352751;color:#d6b8ff;font-size:25px}.benefit h3{margin:16px 0 7px;font-size:17px}.benefit p{color:var(--muted);margin:0;font-size:13px;line-height:1.7}.fine-print{color:#999bb0;font-size:12px;margin:17px 0 0}
+    .catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.catalog-card{overflow:hidden;border:1px solid #353247;background:#1a1c2b;border-radius:22px;transition:transform .35s,box-shadow .35s}.catalog-card:hover{transform:translateY(-5px);box-shadow:0 24px 50px #0004}.catalog-image{height:250px;position:relative;overflow:hidden;background:#d8dce8}.catalog-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s}.catalog-card:hover img{transform:scale(1.045)}.catalog-image.pulse{background:radial-gradient(circle at 55% 45%,#3d2e74,#111320)}.catalog-image.pulse img{object-fit:contain;padding:15px}.catalog-info{padding:22px}.mini-label{font-size:11px;color:#b38aff;letter-spacing:.07em;font-weight:800;text-transform:uppercase}.catalog-info h3{margin:8px 0;font-size:23px}.catalog-info p{font-size:13px;color:#b3b4c5;line-height:1.7}.catalog-info .warning{color:#f1c59b;font-size:12px}.catalog-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px}.catalog-bottom b{font-size:20px}.catalog-bottom .btn{white-space:nowrap}
+    .secret-button{display:block;margin:10px auto 35px;padding:10px 18px;border:1px dashed #55465e;border-radius:14px;background:#1c1926;color:#aa93b2;font-size:12px;transition:all .3s}.secret-button:hover{color:#fff;background:#503164;transform:rotate(-2deg) scale(1.05)}.secret-dialog{border:1px solid #695a84;background:#1a1929;color:white;border-radius:22px;padding:22px;text-align:center;width:min(420px,calc(100% - 28px));box-shadow:0 25px 100px #000a}.secret-dialog::backdrop{background:#080711c9;backdrop-filter:blur(9px)}.secret-dialog img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px}.secret-dialog h2{font-size:22px;margin:15px 0 5px}.secret-dialog p{color:#bdb3d1;margin:0 0 8px}.secret-close{position:absolute;top:28px;right:28px;background:#181625dd}
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:translateY(0)}
+    @media(max-width:760px){.benefits-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.catalog-grid{grid-template-columns:1fr}.catalog-image{height:220px}.catalog-bottom b{font-size:17px}}
+    @media(max-width:470px){.benefits-grid{grid-template-columns:1fr}.benefit{padding:20px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="announcement"><span aria-hidden="true">✦</span> Индивидуальная сборка электронных устройств • Заказ по согласованию</div>
+  <header class="topbar">
+    <div class="container head">
+      <a class="logo" href="#top" aria-label="BootESP — на главную">
+        <span class="logo-icon" aria-hidden="true">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+        </span>
+        <span>Boot<strong>ESP</strong><small>ЭЛЕКТРОНИКА</small></span>
+      </a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="#product">Шпаргалка</a><a href="#catalog">Каталог</a><a href="#benefits">Преимущества</a><a href="#steps">Заказ</a>
+      </nav>
+      <div class="head-actions"><span class="head-note"><i class="live"></i> Изготавливаем на заказ</span><button class="btn btn-sm js-order" type="button">Сделать заказ <span aria-hidden="true">↗</span></button></div>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <nav class="crumbs" aria-label="Навигационная цепочка"><a href="#top">Главная</a><span class="sep">/</span><a href="#about">Электроника</a><span class="sep">/</span><strong>Электронная шпаргалка</strong></nav>
+    <section class="product" id="product" aria-label="Электронная шпаргалка">
+      <div class="gallery">
+        <div class="gallery-main" id="galleryMain">
+          <img id="mainImage" src="assets/device-front.webp" alt="Пример электронного устройства: OLED-экран и три кнопки на плате" width="1600" height="1600" fetchpriority="high">
+          <div class="photo-label">✦ Примерный внешний вид</div>
+          <button class="gallery-arrow prev" type="button" id="prevPhoto" aria-label="Предыдущее фото"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button class="gallery-arrow next" type="button" id="nextPhoto" aria-label="Следующее фото"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+          <div class="photo-count" id="photoCount">01 / 02</div>
+          <button class="zoom" type="button" id="zoomOpen" aria-label="Увеличить фотографию"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 5 5M8 11h6M11 8v6"/></svg></button>
+        </div>
+        <div class="thumbnails" aria-label="Фото устройства">
+          <button class="thumb" type="button" data-photo="0" aria-label="Фото 1: передняя сторона" aria-pressed="true"><img src="assets/device-front.webp" alt="" width="160" height="160" loading="lazy"></button>
+          <button class="thumb" type="button" data-photo="1" aria-label="Фото 2: обратная сторона" aria-pressed="false"><img src="assets/device-back.webp" alt="" width="160" height="160" loading="lazy"></button>
+          <div class="thumb-label"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M8 11l4 4 4-4M5 18v3h14v-3"/></svg> Реальное устройство может отличаться от фото</div>
+        </div>
+      </div>
+      <div class="product-content">
+        <div class="eyebrow"><i></i> Устройство на заказ</div>
+        <h1>Электронная <span>шпаргалка</span></h1><p class="device-subtitle">ESP32-C3 SuperMini + OLED Display</p>
+        <p class="intro">Карманное устройство на базе ESP32-C3 SuperMini с OLED-дисплеем и кнопочным управлением. Для просмотра заметок и электронных подсказок. Собирается индивидуально под заказ.</p>
+        <div class="chips">
+          <span class="chip is-green"><svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg> Под заказ</span>
+          <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h4"/></svg> Компактный формат</span>
+          <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 4v6M17 4v6M4 17h16M7 14v6M17 14v6"/></svg> ESP32-C3</span>
+        </div>
+        <div class="price-card">
+          <div class="price-row"><div><div class="price-label">Стоимость устройства</div><div class="price">1 200 <small>₽</small></div></div><span class="order-badge">● На заказ</span></div>
+          <button type="button" class="btn main-buy js-order">Оформить заказ <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+          <a href="https://max.ru/u/f9LHodD0cOIYQdDyr2XZLnrSIqGVde4hvZjoRxivSk0u7xCEuIZfAGjWCrE" target="_blank" rel="noopener noreferrer" class="btn btn-outline secondary-buy">Написать в MAX ↗</a>
+          <p class="payment-caption"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7h.01"/></svg> Условия изготовления и получения уточняются при оформлении заявки.</p>
+        </div>
+        <div class="notice"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3 2 21h20L12 3ZM12 9v5m0 4h.01"/></svg><div><b>Обратите внимание</b><br>Фотографии показывают <b>примерный вид</b>. Устройство изготавливается на заказ; внешний вид и детали конечной сборки могут отличаться.</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="aboutTitle">
+      <div class="section-head"><div><div class="tagline">О товаре</div><h2 id="aboutTitle">Подробная информация</h2></div><p>Компактность, экран и гибкость настройки</p></div>
+      <div class="about-grid">
+        <div class="panel">
+          <div class="tabs" role="tablist" aria-label="Информация об устройстве">
+            <button type="button" class="tab" id="tab-description" data-tab="description" role="tab" aria-controls="panel-description" aria-selected="true">Описание</button>
+            <button type="button" class="tab" id="tab-photo" data-tab="photo" role="tab" aria-controls="panel-photo" aria-selected="false" tabindex="-1">Что на фото</button>
+            <button type="button" class="tab" id="tab-order" data-tab="order" role="tab" aria-controls="panel-order" aria-selected="false" tabindex="-1">Условия заказа</button>
+          </div>
+          <div class="tab-panel active" id="panel-description" role="tabpanel" aria-labelledby="tab-description"><p><b>Электронная шпаргалка</b> — миниатюрное электронное устройство, которое собирается на заказ. Основа заявленной сборки — ESP32-C3 SuperMini, OLED-дисплей и физические кнопки. Такое сочетание позволяет создать небольшой просмотрщик заметок с понятным управлением.</p><p>Конкретные возможности, комплектация и окончательный внешний вид обсуждаются до изготовления.</p></div>
+          <div class="tab-panel" id="panel-photo" role="tabpanel" aria-labelledby="tab-photo" hidden><p>На первом снимке показана <b>передняя сторона</b>: небольшой дисплей и три кнопки управления. На втором — <b>обратная сторона</b> платы с электронным модулем.</p><p>Обе фотографии являются <b>примером</b>, а не гарантированным изображением того, что получит заказчик.</p></div>
+          <div class="tab-panel" id="panel-order" role="tabpanel" aria-labelledby="tab-order" hidden><p>Цена за устройство — <b>1 200 ₽</b>. Изготовление выполняется <b>на заказ</b>. Перед началом работ согласуются детали, сроки и способ получения.</p><p>Сайт представляет товар и помогает подготовить заявку. <b>Он не принимает оплату автоматически.</b></p></div>
+        </div>
+        <div class="panel"><div class="specs">
+          <div class="spec"><svg width="23" height="23" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round"><rect x="4" y="4" width="16" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Дисплей</b><span>OLED: чёткий контрастный текст</span></div>
+          <div class="spec"><svg width="23" height="23" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h3v3H7zM14 9h3v3h-3zM7 15h10"/></svg><b>Кнопки</b><span>Физическое управление</span></div>
+          <div class="spec"><svg width="23" height="23" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M19 9h3M19 15h3M2 9h3M2 15h3"/></svg><b>Контроллер</b><span>ESP32-C3 SuperMini</span></div>
+          <div class="spec"><svg width="23" height="23" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M7 4v6M17 4v6M5 14h14v6H5z"/></svg><b>Формат</b><span>Миниатюрная плата</span></div>
+        </div></div>
+      </div>
+    </section>
+
+
+    <section class="section reveal" id="benefits"><div class="section-head"><div><div class="tagline">Почему BootESP</div><h2>Маленькая плата. Большие возможности.</h2></div></div>
+      <div class="benefits-grid">
+        <article class="benefit"><span>◈</span><h3>ESP32-C3 SuperMini</h3><p>Компактный микроконтроллер — хорошая основа для небольших DIY-устройств и индивидуальной прошивки.</p></article>
+        <article class="benefit"><span>▣</span><h3>OLED-дисплей</h3><p>Контрастное отображение текста и меню. Удобно читать короткие заметки без большого экрана.</p></article>
+        <article class="benefit"><span>⌘</span><h3>Физические кнопки</h3><p>Простая навигация по пунктам меню и страницам без сенсорного экрана.</p></article>
+        <article class="benefit"><span>↗</span><h3>Компактный размер</h3><p>Небольшая электроника без громоздкого корпуса. Размер итоговой сборки зависит от комплектации.</p></article>
+        <article class="benefit"><span>⚙</span><h3>Настройка под заказ</h3><p>Можно обсудить оформление меню, способ загрузки заметок и дополнительные функции до сборки.</p></article>
+        <article class="benefit"><span>✦</span><h3>Возможности платформы</h3><p>ESP32-C3 поддерживает Wi-Fi и Bluetooth LE; использование зависит от выбранной прошивки.</p></article>
+      </div>
+      <p class="fine-print">Функции, время работы, питание и способ загрузки текста зависят от конкретной сборки и согласуются перед заказом. Используйте устройство там, где это разрешено правилами.</p>
+    </section>
+    <section class="section reveal" id="catalog"><div class="section-head"><div><div class="tagline">Каталог BootESP</div><h2>Другие электронные устройства</h2></div><p>Проекты с индивидуальной сборкой</p></div>
+      <div class="catalog-grid">
+        <article class="catalog-card"><div class="catalog-image"><img src="assets/device-front.webp" alt="Пример электронной шпаргалки с OLED" loading="lazy"></div><div class="catalog-info"><span class="mini-label">ESP32-C3 • OLED</span><h3>Электронная шпаргалка</h3><p>Карманный просмотрщик заметок с кнопками.</p><div class="catalog-bottom"><b>1 200 ₽</b><a class="btn btn-sm" href="#product">Подробнее ↗</a></div></div></article>
+        <article class="catalog-card"><div class="catalog-image pulse"><img src="assets/pulse-placeholder.svg" alt="Схематичная иллюстрация генератора импульсов, не фотография товара" loading="lazy"><span class="photo-label">Иллюстрация • не фото</span></div><div class="catalog-info"><span class="mini-label">Электроника • Под заказ</span><h3>Генератор импульсов</h3><p>Экспериментальный генератор электрических импульсов для технических демонстраций. По словам изготовителя, во время его личной проверки импульсы не вызывали болезненных ощущений. Характеристики и комплектация уточняются при заказе.</p><p class="warning">⚠ Отсутствие боли не означает безопасность: высокое напряжение может быть опасным. Не использовать на людях и животных.</p><div class="catalog-bottom"><b>Цена по запросу</b><button class="btn btn-sm js-order" data-product="pulse" type="button">Узнать детали ↗</button></div></div></article>
+      </div>
+    </section>
+
+    <section class="section" id="steps" aria-labelledby="stepsTitle">
+      <div class="section-head"><div><div class="tagline">Просто и понятно</div><h2 id="stepsTitle">Как проходит заказ</h2></div></div>
+      <div class="steps">
+        <article class="step"><div class="num">ШАГ 01</div><span class="step-icon" aria-hidden="true"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 20l1-4a8.5 8.5 0 1 1 16-4.5Z"/><path d="M8 10h8M8 14h5"/></svg></span><h3>Оставьте заявку</h3><p>Подготовьте короткое сообщение с пожеланиями к устройству.</p></article>
+        <article class="step"><div class="num">ШАГ 02</div><span class="step-icon" aria-hidden="true"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m4 13 5 5L20 7"/><path d="M4 4h16"/></svg></span><h3>Согласуйте детали</h3><p>Уточните внешний вид, комплектацию, срок и способ получения.</p></article>
+        <article class="step"><div class="num">ШАГ 03</div><span class="step-icon" aria-hidden="true"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12h8M12 8v8"/></svg></span><h3>Изготовление</h3><p>Устройство собирается на заказ по согласованным условиям.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faqTitle">
+      <div class="section-head"><div><div class="tagline">Есть вопросы?</div><h2 id="faqTitle">Часто спрашивают</h2></div></div>
+      <div class="faq">
+        <details><summary>На фотографиях именно то устройство, которое я получу?</summary><p>Нет. Фотографии показывают примерный внешний вид. Итоговая сборка может отличаться — детали согласуются перед изготовлением.</p></details>
+        <details><summary>Устройство уже готово к отправке?</summary><p>Нет, оно изготавливается на заказ. Наличие комплектующих, сроки и способ получения обсуждаются отдельно.</p></details>
+        <details><summary>Сколько стоит шпаргалка на ESP32-C3?</summary><p>На сайте указана цена 1 200 ₽ за устройство. Дополнительные условия, если они потребуются, следует уточнить до заказа.</p></details>
+        <details><summary>Можно обсудить параметры устройства?</summary><p>Да, сообщите свои пожелания в заявке. Возможность их реализации нужно согласовать с изготовителем.</p></details>
+      </div>
+    </section>
+
+    <section class="cta-banner" aria-label="Оформить заявку"><div><div class="tagline">BootESP / На заказ</div><h2>Хотите заказать устройство?</h2><p>Цена — 1 200 ₽. Оставьте заявку и согласуйте детали до изготовления.</p></div><button class="btn js-order" type="button">Перейти к заказу <span aria-hidden="true">↗</span></button></section>
+  </main>
+
+  <footer><div class="container footer-inner"><div class="foot-logo">Boot<span>ESP</span></div><p class="foot-copy">© <span id="year"></span> BootESP. Фотографии — ориентировочный пример. Независимый сайт, не является частью Playerok и не связан с ним.</p><nav class="footer-links" aria-label="Ссылки в подвале"><a href="#product">Товар</a><a href="#about">Описание</a><a href="#catalog">Каталог</a><a href="https://max.ru/u/f9LHodD0cOIYQdDyr2XZLnrSIqGVde4hvZjoRxivSk0u7xCEuIZfAGjWCrE" target="_blank" rel="noopener noreferrer">Наш MAX ↗</a></nav></div></footer>
+  <div class="mobile-bar"><div><small>Стоимость устройства</small><b>1 200 ₽</b></div><button type="button" class="btn js-order">Заказать ↗</button></div>
+
+  <dialog id="orderDialog" aria-labelledby="orderHeading"><div class="modal-inner">
+    <div class="modal-head"><div><div class="tagline">Заявка на изготовление</div><h2 id="orderHeading">Заказать устройство</h2><p>Заполните поля, скопируйте сообщение и отправьте продавцу.</p></div><button type="button" class="icon-btn" id="orderClose" aria-label="Закрыть окно">✕</button></div>
+    <div class="modal-product"><img src="assets/device-front.webp" alt="" width="67" height="67"><div><b>Электронная шпаргалка на заказ</b><span>1 200 ₽</span></div></div>
+    <form id="orderForm"><div class="modal-row"><div><label for="buyerName">Как к вам обращаться</label><input id="buyerName" class="field" type="text" maxlength="80" placeholder="Имя или ник"></div><div><label for="buyerContact">Ваш контакт</label><input id="buyerContact" class="field" type="text" maxlength="150" placeholder="@username / e-mail"></div></div><label for="buyerNotes">Пожелания по заказу</label><textarea id="buyerNotes" class="field" maxlength="1000" placeholder="Например, хочу обсудить комплектацию и сроки"></textarea><div class="modal-buttons"><button type="submit" class="btn">Скопировать текст заявки <span aria-hidden="true">⧉</span></button><a id="sellerLink" class="btn btn-outline" href="#" target="_blank" rel="noopener noreferrer" hidden>Открыть чат с продавцом ↗</a></div></form>
+    <div id="missingContact" class="contact-notice">Написать продавцу можно через MAX.</div>
+    <p class="help">На этом сайте нет онлайн-оплаты или автоматической отправки заявки. Сообщение можно скопировать и отправить самостоятельно.</p>
+  </div></dialog>
+  <dialog id="zoomDialog" class="zoom-dialog" aria-label="Просмотр фотографии"><div class="zoom-dialog-head"><span id="zoomTitle">Фото устройства</span><button type="button" class="icon-btn" id="zoomClose" aria-label="Закрыть просмотр">✕</button></div><img id="zoomImage" src="assets/device-front.webp" alt="Увеличенная фотография электронного устройства"></dialog>
+  <button class="secret-button" type="button" id="secretOpen">⛔ Не нажимать</button>
+  <dialog id="secretDialog" class="secret-dialog" aria-label="Секрет BootESP"><button type="button" id="secretClose" class="icon-btn secret-close" aria-label="Закрыть">✕</button><img src="assets/secret-cat.png" alt="Милый белый котик в шапке Деда Мороза на снежной улице"><h2>А ты всё-таки нажал! 🎄</h2><p>Секретный уровень BootESP разблокирован.</p></dialog>
+  <div class="toast" role="status" aria-live="polite" id="toast">Текст заявки скопирован</div>
+
+  <script>
+    // Контакт продавца в MAX:
+    const SELLER_MAX = "https://max.ru/u/f9LHodD0cOIYQdDyr2XZLnrSIqGVde4hvZjoRxivSk0u7xCEuIZfAGjWCrE";
+
+    const photos = [
+      {src:"assets/device-front.webp",alt:"Пример электронной шпаргалки, вид спереди: экран и три кнопки",name:"Вид спереди"},
+      {src:"assets/device-back.webp",alt:"Пример электронной шпаргалки, обратная сторона платы с электронным модулем",name:"Вид сзади"}
+    ];
+    let currentPhoto=0;
+    const $=id=>document.getElementById(id);
+    const mainImage=$("mainImage"),zoomDialog=$("zoomDialog"),orderDialog=$("orderDialog");
+    function setPhoto(index){currentPhoto=(index+photos.length)%photos.length;const p=photos[currentPhoto];mainImage.src=p.src;mainImage.alt=p.alt;$("photoCount").textContent=String(currentPhoto+1).padStart(2,"0")+" / 02";document.querySelectorAll(".thumb").forEach((el,i)=>el.setAttribute("aria-pressed",i===currentPhoto?"true":"false"));$("zoomImage").src=p.src;$("zoomImage").alt=p.alt;$("zoomTitle").textContent=p.name+" · Примерный вид"}
+    document.querySelectorAll(".thumb").forEach(el=>el.addEventListener("click",()=>setPhoto(Number(el.dataset.photo))));
+    $("prevPhoto").addEventListener("click",()=>setPhoto(currentPhoto-1));$("nextPhoto").addEventListener("click",()=>setPhoto(currentPhoto+1));
+    $("zoomOpen").addEventListener("click",()=>zoomDialog.showModal());$("zoomClose").addEventListener("click",()=>zoomDialog.close());
+    zoomDialog.addEventListener("click",e=>{if(e.target===zoomDialog)zoomDialog.close()});
+    let selectedProduct={name:"Электронная шпаргалка ESP32-C3 + OLED",price:"1 200 ₽",image:"assets/device-front.webp"};
+    function openOrder(e){const trigger=e?.currentTarget;const isPulse=trigger?.dataset?.product==="pulse";selectedProduct=isPulse?{name:"Генератор импульсов",price:"Цена по запросу",image:"assets/pulse-placeholder.svg"}:{name:"Электронная шпаргалка ESP32-C3 + OLED",price:"1 200 ₽",image:"assets/device-front.webp"};document.querySelector(".modal-product img").src=selectedProduct.image;document.querySelector(".modal-product b").textContent=selectedProduct.name;document.querySelector(".modal-product span").textContent=selectedProduct.price;orderDialog.showModal()}
+    document.querySelectorAll(".js-order").forEach(el=>el.addEventListener("click",openOrder));
+    $("orderClose").addEventListener("click",()=>orderDialog.close());orderDialog.addEventListener("click",e=>{if(e.target===orderDialog)orderDialog.close()});
+    $("sellerLink").href=SELLER_MAX;$("sellerLink").hidden=false;$("sellerLink").textContent="Написать продавцу в MAX ↗";$("missingContact").hidden=true;
+    document.querySelectorAll(".tab").forEach(button=>button.addEventListener("click",()=>activateTab(button)));
+    function activateTab(button){document.querySelectorAll(".tab").forEach(b=>{const active=b===button;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const panel=$("panel-"+b.dataset.tab);panel.classList.toggle("active",active);panel.hidden=!active})}
+    document.querySelector("[role=tablist]").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","Home","End"].includes(e.key))return;e.preventDefault();const tabs=[...document.querySelectorAll(".tab")];const current=tabs.findIndex(b=>b.getAttribute("aria-selected")==="true");const index=e.key==="Home"?0:e.key==="End"?tabs.length-1:e.key==="ArrowRight"?(current+1)%tabs.length:(current-1+tabs.length)%tabs.length;activateTab(tabs[index]);tabs[index].focus()});
+    let toastTimer;
+    function showToast(message){const t=$("toast");t.textContent=message;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),3300)}
+    async function copyText(text){if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return}const field=document.createElement("textarea");field.value=text;field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();const done=document.execCommand("copy");field.remove();if(!done)throw new Error("copy failed")}
+    $("orderForm").addEventListener("submit",async e=>{e.preventDefault();const name=$("buyerName").value.trim(),contact=$("buyerContact").value.trim(),notes=$("buyerNotes").value.trim();const msg=["Здравствуйте! Хочу заказать: "+selectedProduct.name+" ("+selectedProduct.price+").","Понимаю, что товар изготавливается на заказ, а фото — пример.",name?"Имя / ник: "+name:null,contact?"Мой контакт: "+contact:null,notes?"Пожелания: "+notes:null,"Подскажите, пожалуйста, сроки, комплектацию и условия получения."].filter(Boolean).join("\n");try{await copyText(msg);showToast("Заявка скопирована — отправьте её продавцу")}catch(err){showToast("Не удалось скопировать: выделите текст вручную");window.prompt("Скопируйте текст заявки:",msg)}});
+    const secretDialog=$("secretDialog");$("secretOpen").addEventListener("click",()=>secretDialog.showModal());$("secretClose").addEventListener("click",()=>secretDialog.close());secretDialog.addEventListener("click",e=>{if(e.target===secretDialog)secretDialog.close()});
+    if("IntersectionObserver" in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target)}})},{threshold:.08});document.querySelectorAll(".reveal").forEach(el=>observer.observe(el))}else{document.querySelectorAll(".reveal").forEach(el=>el.classList.add("visible"))}
+    $("year").textContent=String(new Date().getFullYear());
+    document.addEventListener("keydown",e=>{if(!zoomDialog.open&&!orderDialog.open&&["ArrowRight","ArrowLeft"].includes(e.key)&&document.activeElement?.closest?.(".gallery")){setPhoto(currentPhoto+(e.key==="ArrowRight"?1:-1))}});
+  </script>
+</body>
+</html>
